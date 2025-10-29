@@ -369,6 +369,9 @@ static/
 - **Colors**: Violet-blue primary palette
 - **Typography**: Inter font family
 - **Layout**: 3-column responsive grid
+- **v1.1 (2025-10-29)**: Enhanced UX with dynamic data display and improved legal disclaimer placement
+- **New Features**: Dynamic expense breakdown, clickable navigation elements, bottom-positioned legal notices
+- **UX Improvements**: Better information hierarchy, improved accessibility, enhanced mobile experience
 
 ---
 

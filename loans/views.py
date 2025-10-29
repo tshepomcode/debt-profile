@@ -87,12 +87,21 @@ def dashboard(request):
     total_payments = loans.aggregate(Sum('minimum_payment'))['minimum_payment__sum'] or 0
     avg_rate = loans.aggregate(Avg('interest_rate'))['interest_rate__avg'] or 0
 
+    # Calculate loan type breakdown for expense overview
+    loan_type_breakdown = {}
+    for loan in loans:
+        loan_type = loan.get_loan_type_display()
+        if loan_type not in loan_type_breakdown:
+            loan_type_breakdown[loan_type] = 0
+        loan_type_breakdown[loan_type] += loan.minimum_payment
+
     context = {
         'loans': loans,
         'total_balance': total_balance,
         'total_payments': total_payments,
         'avg_rate': avg_rate,
         'loan_count': loans.count(),
+        'loan_type_breakdown': loan_type_breakdown,
     }
     return render(request, 'loans/dashboard.html', context)
 

@@ -1,18 +1,14 @@
 from django.shortcuts import redirect
 from django.urls import path, include
 from django.views.generic import TemplateView
-from rest_framework.routers import DefaultRouter
 from .views import (
-    LoanViewSet, dashboard, loan_list, loan_create, loan_detail,
+    dashboard, loan_list, loan_create, loan_detail,
     loan_toggle_active, loan_delete
 )
 
-router = DefaultRouter()
-router.register(r'', LoanViewSet, basename='loan')
-
 urlpatterns = [
     # API routes
-    path('api/', include(router.urls)),
+    path('api/', include('loans.api_urls')),
 
     # Web routes
     path('', dashboard, name='dashboard'),

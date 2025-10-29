@@ -68,7 +68,9 @@ class LoanAPITest(APITestCase):
             email='test@example.com',
             password='testpass123'
         )
-        self.client.force_authenticate(user=self.user)
+        from rest_framework.authtoken.models import Token
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
         # Clean up any existing loans for this user
         Loan.objects.filter(user=self.user).delete()

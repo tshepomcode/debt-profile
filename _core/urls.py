@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/', include([
         path('auth/', include('dj_rest_auth.urls')),
         path('auth/registration/', include('dj_rest_auth.registration.urls')),
-        path('loans/', include('loans.urls')),
+        path('loans/', include('loans.api_urls')),
         path('plans/', include('plans.urls')),
         path('billing/', include('billing.urls')),
     ])),

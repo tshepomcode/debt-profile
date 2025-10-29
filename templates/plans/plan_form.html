@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load humanize %}
 
 {% block title %}{{ title }} - Debt Profile{% endblock %}
 
@@ -138,11 +139,11 @@
                                 </div>
                                 <div>
                                     <span class="text-base-content/70">Loans Included:</span>
-                                    <div id="preview-loans" class="font-semibold text-primary">{{ user.loans.filter(is_active=True).count }}</div>
+                                    <div id="preview-loans" class="font-semibold text-primary">{{ loan_count }}</div>
                                 </div>
                                 <div>
                                     <span class="text-base-content/70">Total Debt:</span>
-                                    <div id="preview-debt" class="font-semibold text-primary">${{ user.loans.filter(is_active=True).aggregate_sum|floatformat:0|intcomma }}</div>
+                                    <div id="preview-debt" class="font-semibold text-primary">${{ total_debt|floatformat:0|intcomma }}</div>
                                 </div>
                             </div>
                         </div>
@@ -191,9 +192,9 @@
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
                     <h3 class="card-title">Your Active Loans</h3>
-                    {% if user.loans.filter(is_active=True).exists %}
+                    {% if active_loans %}
                         <div class="space-y-2">
-                            {% for loan in user.loans.filter(is_active=True) %}
+                            {% for loan in active_loans %}
                                 <div class="flex justify-between items-center py-2 border-b border-base-300 last:border-b-0">
                                     <div>
                                         <div class="font-medium">{{ loan.name }}</div>
@@ -209,7 +210,7 @@
                         <div class="mt-4 pt-4 border-t border-base-300">
                             <div class="flex justify-between font-semibold">
                                 <span>Total Debt:</span>
-                                <span>${{ user.loans.filter(is_active=True).aggregate_sum|floatformat:0|intcomma }}</span>
+                                <span>${{ total_debt|floatformat:0|intcomma }}</span>
                             </div>
                         </div>
                     {% else %}

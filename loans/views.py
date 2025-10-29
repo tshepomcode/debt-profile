@@ -118,7 +118,17 @@ def loan_create(request):
     else:
         form = LoanForm()
 
-    return render(request, 'loans/loan_form.html', {'form': form, 'title': 'Add New Loan'})
+    # Get loan summary data for the sidebar
+    active_loans = Loan.objects.filter(user=request.user, is_active=True)
+    total_balance = active_loans.aggregate(Sum('balance'))['balance__sum'] or 0
+    
+    context = {
+        'form': form,
+        'title': 'Add New Loan',
+        'total_balance': total_balance,
+        'loan_count': active_loans.count(),
+    }
+    return render(request, 'loans/loan_form.html', context)
 
 
 @login_required

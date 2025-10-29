@@ -31,7 +31,7 @@
 
                     <!-- Navigation -->
                     <nav class="space-y-2">
-                        <a href="{% url 'dashboard' %}" class="flex items-center space-x-3 p-3 rounded-xl bg-violet-50 text-violet-700 font-medium">
+                        <a href="{% url 'loans:dashboard' %}" class="flex items-center space-x-3 p-3 rounded-xl bg-violet-50 text-violet-700 font-medium">
                             <span>🏠</span>
                             <span>Dashboard</span>
                         </a>
@@ -39,11 +39,11 @@
                             <span>💰</span>
                             <span>My Loans</span>
                         </a>
-                        <a href="{% url 'plans:list' %}" class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <a href="{% url 'plans:compare' %}" class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-50">
                             <span>📊</span>
                             <span>Debt Plans</span>
                         </a>
-                        <a href="{% url 'billing:subscription' %}" class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <a href="{% url 'billing:waiting-list-management' %}" class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-50">
                             <span>⚙️</span>
                             <span>Settings</span>
                         </a>
@@ -54,7 +54,7 @@
                     <div class="mt-6 p-4 bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] rounded-xl text-white">
                         <h4 class="font-semibold mb-2">Go Premium</h4>
                         <p class="text-sm opacity-90 mb-3">Unlock advanced features</p>
-                        <a href="{% url 'billing:subscription' %}" class="bg-white text-[#4F46E5] px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                        <a href="{% url 'billing:waiting-list-management' %}" class="bg-white text-[#4F46E5] px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
                             Upgrade Now
                         </a>
                     </div>
@@ -84,7 +84,7 @@
                         <div class="flex justify-between items-start mb-6">
                             <div>
                                 <p class="text-white/80 text-sm font-medium mb-1">Total Debt Balance</p>
-                                <h2 class="text-3xl font-bold">${{ total_balance|floatformat:0|intcomma }}</h2>
+                                <h2 class="text-3xl font-bold">${{ total_balance|floatformat:0 }}</h2>
                             </div>
                             <div class="text-right">
                                 <div class="text-white/60 text-xs mb-1">**** **** **** 4242</div>
@@ -103,7 +103,7 @@
                             </div>
                             <div>
                                 <p class="text-white/80 text-xs">Monthly Min</p>
-                                <p class="text-white font-semibold">${{ total_payments|floatformat:0|intcomma }}</p>
+                                <p class="text-white font-semibold">${{ total_payments|floatformat:0 }}</p>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-bold text-red-600">-${{ loan.minimum_payment|floatformat:0|intcomma }}</p>
+                                        <p class="font-bold text-red-600">-${{ loan.minimum_payment|floatformat:0 }}</p>
                                         <p class="text-sm text-[#6B7280]">Payment</p>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
 
                     <div class="text-center mb-6">
                         <p class="text-[#6B7280] text-sm mb-1">Total Monthly Payments</p>
-                        <p class="text-2xl font-bold text-[#111827]">${{ total_payments|floatformat:0|intcomma }}</p>
+                        <p class="text-2xl font-bold text-[#111827]">${{ total_payments|floatformat:0 }}</p>
                     </div>
 
                     <!-- Expense Breakdown -->
@@ -216,11 +216,11 @@
                             <span>➕</span>
                             <span>Add New Loan</span>
                         </a>
-                        <a href="{% url 'plans:list' %}" class="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                        <a href="{% url 'plans:compare' %}" class="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors">
                             <span>📊</span>
                             <span>View Plans</span>
                         </a>
-                        <a href="{% url 'billing:subscription' %}" class="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                        <a href="{% url 'billing:waiting-list-management' %}" class="flex items-center justify-center space-x-2 w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors">
                             <span>⭐</span>
                             <span>Upgrade Plan</span>
                         </a>

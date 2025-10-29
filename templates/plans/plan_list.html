@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load humanize %}
 
 {% block title %}Debt Plans - Debt Profile{% endblock %}
 
@@ -106,7 +107,7 @@
                             {% if plan.total_payments %}
                             <div class="flex justify-between">
                                 <span class="text-base-content/70">Monthly Payment:</span>
-                                <span class="font-medium">${{ plan.total_payments|div:plan.payoff_months|floatformat:0|intcomma }}</span>
+                                <span class="font-medium">${{ plan.monthly_payment|floatformat:0|intcomma }}</span>
                             </div>
                             {% endif %}
 

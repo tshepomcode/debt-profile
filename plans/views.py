@@ -2,9 +2,12 @@ from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import models
 from django.db.models import Count, Sum
+from django.http import JsonResponse
 from billing.permissions import HasPlanLimit, CanExportPlans, CanComparePlans
 from .models import DebtPlan, PlanProgress
 from .serializers import (
@@ -19,6 +22,9 @@ from reportlab.lib import colors
 from django.http import HttpResponse
 from io import BytesIO
 import json
+
+# Import Loan model for plan creation view
+from loans.models import Loan
 
 
 class DebtPlanViewSet(viewsets.ModelViewSet):
@@ -328,3 +334,36 @@ class PlanProgressViewSet(viewsets.ModelViewSet):
         recent_progress = self.get_queryset().order_by('-created_at')[:10]
         serializer = self.get_serializer(recent_progress, many=True)
         return Response(serializer.data)
+
+
+# Web Views
+@login_required
+def plan_create(request):
+    """Create a new debt plan."""
+    # Get user's active loans
+    active_loans = Loan.objects.filter(user=request.user, is_active=True)
+    total_debt = active_loans.aggregate(Sum('balance'))['balance__sum'] or 0
+    
+    context = {
+        'active_loans': active_loans,
+        'total_debt': total_debt,
+        'loan_count': active_loans.count(),
+    }
+    return render(request, 'plans/plan_form.html', context)
+
+
+@login_required
+def plan_list(request):
+    """List all user's debt plans."""
+    plans = DebtPlan.objects.filter(user=request.user)
+    total_debt = plans.aggregate(Sum('total_debt'))['total_debt__sum'] or 0
+    total_saved = plans.aggregate(Sum('total_interest_saved'))['total_interest_saved__sum'] or 0
+    active_plans = plans.filter(status='active')
+    
+    context = {
+        'plans': plans,
+        'total_debt': total_debt,
+        'total_saved': total_saved,
+        'active_plans': active_plans,
+    }
+    return render(request, 'plans/plan_list.html', context)

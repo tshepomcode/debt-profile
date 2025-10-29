@@ -45,25 +45,25 @@
                     </svg>
                 </div>
                 <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'loans:dashboard' %}">Dashboard</a></li>
                     <li><a href="{% url 'loans:list' %}">My Loans</a></li>
-                    <li><a href="{% url 'plans:list' %}">Debt Plans</a></li>
+                    <li><a href="{% url 'plans:compare' %}">Debt Plans</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'billing:subscription' %}">Subscription</a></li>
+                        <li><a href="{% url 'billing:waiting-list-management' %}">Subscription</a></li>
                     {% endif %}
                 </ul>
             </div>
-            <a href="{% url 'dashboard' %}" class="btn btn-ghost text-xl">
+            <a href="{% url 'loans:dashboard' %}" class="btn btn-ghost text-xl">
                 💰 Debt Profile
             </a>
         </div>
         <div class="navbar-center hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
-                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'loans:dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'loans:list' %}">My Loans</a></li>
-                <li><a href="{% url 'plans:list' %}">Debt Plans</a></li>
+                <li><a href="{% url 'plans:compare' %}">Debt Plans</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'billing:subscription' %}">Subscription</a></li>
+                    <li><a href="{% url 'billing:waiting-list-management' %}">Subscription</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -76,8 +76,8 @@
                         </div>
                     </div>
                     <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a href="{% url 'account_profile' %}">Profile</a></li>
-                        <li><a href="{% url 'account_settings' %}">Settings</a></li>
+                        <li><a href="{% url 'loans:dashboard' %}">Profile</a></li>
+                        <li><a href="{% url 'billing:waiting-list-management' %}">Settings</a></li>
                         <li><a href="{% url 'account_logout' %}">Logout</a></li>
                     </ul>
                 </div>
@@ -99,10 +99,10 @@
             </div>
         {% endif %}
 
+        {% block content %}{% endblock %}
+
         <!-- Legal Disclaimers (shown on key pages) -->
         {% block disclaimers %}{% endblock %}
-
-        {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->

@@ -2,7 +2,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 from django.shortcuts import render
-from .views import DebtPlanViewSet, PlanProgressViewSet
+from .views import DebtPlanViewSet, PlanProgressViewSet, plan_create, plan_list
+
+app_name = 'plans'
 
 router = DefaultRouter()
 router.register(r'plans', DebtPlanViewSet, basename='debtplan')
@@ -50,5 +52,7 @@ urlpatterns = [
     path('', include(plans_router.urls)),
 
     # Web URLs
+    path('create/', plan_create, name='create'),
+    path('list/', plan_list, name='list'),
     path('compare/', plan_compare_view, name='compare'),
 ]

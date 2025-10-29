@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load humanize %}
 
 {% block title %}{{ title }} - Debt Profile{% endblock %}
 
@@ -184,7 +185,7 @@
                         <div class="stat">
                             <div class="stat-title">Total Balance</div>
                             <div class="stat-value text-sm">
-                                ${{ user.loans.filter(is_active=True).aggregate_sum|floatformat:0|intcomma }}
+                                ${{ total_balance|floatformat:0|intcomma }}
                             </div>
                         </div>
                     </div>
@@ -215,7 +216,7 @@
             Paste your loan data in CSV format. First row should be headers.
         </p>
 
-        <form method="post" action="{% url 'loans:bulk_import' %}" class="space-y-4">
+        <form method="post" action="#" class="space-y-4" style="display: none;">
             {% csrf_token %}
             <textarea
                 name="loans_data"

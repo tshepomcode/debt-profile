@@ -106,9 +106,9 @@
                                     <td>
                                         <div class="badge badge-ghost">{{ loan.get_loan_type_display }}</div>
                                     </td>
-                                    <td class="font-semibold">${{ loan.balance|floatformat:0|intcomma }}</td>
+                                    <td class="font-semibold">${{ loan.balance|floatformat:0 }}</td>
                                     <td>{{ loan.interest_rate }}%</td>
-                                    <td>${{ loan.minimum_payment|floatformat:0|intcomma }}</td>
+                                    <td>${{ loan.minimum_payment|floatformat:0 }}</td>
                                     <td>
                                         {% if loan.is_active %}
                                             <div class="badge badge-success">Active</div>
@@ -125,9 +125,9 @@
                                                 <li>
                                                     <a href="#"
                                                        hx-post="{% url 'loans:toggle' loan.id %}"
-                                                       hx-confirm="Are you sure you want to {{ 'deactivate' if loan.is_active else 'activate' }} this loan?"
+                                                       hx-confirm="Are you sure you want to {% if loan.is_active %}deactivate{% else %}activate{% endif %} this loan?"
                                                        class="{% if loan.is_active %}text-warning{% else %}text-success{% endif %}">
-                                                        {{ 'Deactivate' if loan.is_active else 'Activate' }}
+                                                        {% if loan.is_active %}Deactivate{% else %}Activate{% endif %}
                                                     </a>
                                                 </li>
                                                 <li>

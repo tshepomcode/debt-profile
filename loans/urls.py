@@ -6,6 +6,8 @@ from .views import (
     loan_toggle_active, loan_delete
 )
 
+app_name = 'loans'
+
 urlpatterns = [
     # API routes
     path('api/', include('loans.api_urls')),

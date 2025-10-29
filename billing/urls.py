@@ -5,6 +5,8 @@ from .views import (
     WaitingListViewSet, stripe_webhook, waiting_list_management
 )
 
+app_name = 'billing'
+
 router = DefaultRouter()
 router.register(r'plans', SubscriptionPlanViewSet, basename='subscriptionplan')
 router.register(r'subscriptions', UserSubscriptionViewSet, basename='usersubscription')

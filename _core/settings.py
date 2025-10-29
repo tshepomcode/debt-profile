@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import warnings
+
+# Suppress deprecation warnings from dj_rest_auth
+warnings.filterwarnings('ignore', category=UserWarning, module='dj_rest_auth')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -38,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.humanize',  # For intcomma and other humanize filters
 
     # Third-party apps
     'rest_framework',
@@ -157,8 +161,42 @@ SITE_ID = 1
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-LOGIN_REDIRECT_URL = '/loans/dashboard/'
+LOGIN_REDIRECT_URL = '/'  # Points to the dashboard view
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+# Django REST Auth settings (dj_rest_auth)
+# Using the new format to avoid deprecation warnings
+REST_AUTH = {
+    'SIGNUP_FIELDS': {
+        'email': {
+            'required': True,
+            'read_only': False
+        },
+        'username': {
+            'required': False,
+            'read_only': True
+        },
+        'password1': {
+            'required': True,
+            'read_only': False
+        },
+        'password2': {
+            'required': True,
+            'read_only': False
+        }
+    },
+    'USE_JWT': False,  # Use session-based authentication
+    'JWT_AUTH_HTTPONLY': False,
+    'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer',
+}
+
+# Legacy settings for dj-rest-auth to prevent deprecation warnings
+# These need to be available in the allauth.account app_settings module
+USERNAME_REQUIRED = False
+EMAIL_REQUIRED = True
+
+# Configure allauth to use the new SIGNUP_FIELDS structure
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 # Django REST Framework
 REST_FRAMEWORK = {

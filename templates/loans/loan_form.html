@@ -1,0 +1,276 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }} - Debt Profile{% endblock %}
+
+{% block disclaimers %}
+    {% include 'base/disclaimer.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-base-content">{{ title }}</h1>
+        <p class="text-base-content/70 mt-2">
+            Add your loan details to get personalized debt reduction recommendations
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Form -->
+        <div class="lg:col-span-2">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <form method="post" class="space-y-6">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-error">
+                                {% for error in form.non_field_errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Basic Information -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold">Loan Details</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Loan Name *</span>
+                                    </label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.name.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Creditor/Bank *</span>
+                                    </label>
+                                    {{ form.creditor }}
+                                    {% if form.creditor.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.creditor.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Loan Type</span>
+                                </label>
+                                {{ form.loan_type }}
+                                {% if form.loan_type.errors %}
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ form.loan_type.errors.0 }}</span>
+                                    </label>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Financial Information -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold">Financial Details</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Current Balance ($) *</span>
+                                    </label>
+                                    {{ form.balance }}
+                                    {% if form.balance.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.balance.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Interest Rate (%) *</span>
+                                    </label>
+                                    {{ form.interest_rate }}
+                                    {% if form.interest_rate.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.interest_rate.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Min. Payment ($) *</span>
+                                    </label>
+                                    {{ form.minimum_payment }}
+                                    {% if form.minimum_payment.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.minimum_payment.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Calculations Preview -->
+                        <div class="bg-base-200 p-4 rounded-lg">
+                            <h4 class="font-semibold mb-3">Payment Preview</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                <div>
+                                    <span class="text-base-content/70">Monthly Interest:</span>
+                                    <div id="monthly-interest" class="font-semibold text-primary">$0.00</div>
+                                </div>
+                                <div>
+                                    <span class="text-base-content/70">Years to Pay Off:</span>
+                                    <div id="years-to-payoff" class="font-semibold text-primary">0</div>
+                                </div>
+                                <div>
+                                    <span class="text-base-content/70">Total Interest:</span>
+                                    <div id="total-interest" class="font-semibold text-primary">$0.00</div>
+                                </div>
+                                <div>
+                                    <span class="text-base-content/70">Total Payments:</span>
+                                    <div id="total-payments" class="font-semibold text-primary">$0.00</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <button type="submit" class="btn btn-primary flex-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Save Loan
+                            </button>
+                            <a href="{% url 'loans:list' %}" class="btn btn-ghost">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Tips -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">💡 Tips</h3>
+                    <ul class="text-sm space-y-2 text-base-content/70">
+                        <li>• Use a descriptive name for easy identification</li>
+                        <li>• Check your latest statement for accurate balances</li>
+                        <li>• Include all fees in the balance if possible</li>
+                        <li>• Minimum payment is usually 2-3% of balance</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Your Portfolio</h3>
+                    <div class="stats stats-vertical w-full">
+                        <div class="stat">
+                            <div class="stat-title">Total Loans</div>
+                            <div class="stat-value text-primary">{{ user.loans.count }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Total Balance</div>
+                            <div class="stat-value text-sm">
+                                ${{ user.loans.filter(is_active=True).aggregate_sum|floatformat:0|intcomma }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Import -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Bulk Import</h3>
+                    <p class="text-sm text-base-content/70 mb-4">
+                        Have multiple loans? Import them all at once.
+                    </p>
+                    <button class="btn btn-outline btn-block" onclick="openModal('bulk-import-modal')">
+                        Import from CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Import Modal -->
+<div id="bulk-import-modal" class="modal">
+    <div class="modal-box max-w-2xl">
+        <h3 class="font-bold text-lg">Bulk Import Loans</h3>
+        <p class="py-4">
+            Paste your loan data in CSV format. First row should be headers.
+        </p>
+
+        <form method="post" action="{% url 'loans:bulk_import' %}" class="space-y-4">
+            {% csrf_token %}
+            <textarea
+                name="loans_data"
+                class="textarea textarea-bordered w-full h-48"
+                placeholder="Name,Balance,Interest Rate,Min Payment,Creditor,Type
+Student Loan,15000,5.5,200,Bank A,Student
+Credit Card,2500,18.99,75,Bank B,Credit Card"
+            ></textarea>
+
+            <div class="modal-action">
+                <button type="button" class="btn" onclick="closeModal('bulk-import-modal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Import Loans</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Real-time calculations
+document.addEventListener('DOMContentLoaded', function() {
+    const balanceInput = document.querySelector('[name="balance"]');
+    const rateInput = document.querySelector('[name="interest_rate"]');
+    const paymentInput = document.querySelector('[name="minimum_payment"]');
+
+    function updateCalculations() {
+        const balance = parseFloat(balanceInput?.value) || 0;
+        const rate = parseFloat(rateInput?.value) || 0;
+        const minPayment = parseFloat(paymentInput?.value) || 0;
+
+        if (balance > 0 && rate > 0 && minPayment > 0) {
+            // Monthly interest
+            const monthlyInterest = (balance * (rate / 100)) / 12;
+            document.getElementById('monthly-interest').textContent = formatCurrency(monthlyInterest);
+
+            // Estimate years to pay off (rough calculation)
+            const yearsToPayoff = Math.log(1 + (balance * rate / 100) / minPayment) / Math.log(1 + rate / 100);
+            document.getElementById('years-to-payoff').textContent = yearsToPayoff.toFixed(1);
+
+            // Total interest and payments (rough estimate)
+            const totalPayments = minPayment * 12 * yearsToPayoff;
+            const totalInterest = totalPayments - balance;
+
+            document.getElementById('total-interest').textContent = formatCurrency(totalInterest);
+            document.getElementById('total-payments').textContent = formatCurrency(totalPayments);
+        }
+    }
+
+    [balanceInput, rateInput, paymentInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', updateCalculations);
+        }
+    });
+
+    // Initial calculation
+    updateCalculations();
+});
+</script>
+{% endblock %}

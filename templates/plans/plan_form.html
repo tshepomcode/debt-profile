@@ -1,0 +1,290 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }} - Debt Profile{% endblock %}
+
+{% block disclaimers %}
+    {% include 'base/disclaimer.html' %}
+    {% include 'base/terms.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-base-content">{{ title }}</h1>
+        <p class="text-base-content/70 mt-2">
+            Create a personalized debt reduction plan using proven strategies
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Form -->
+        <div class="lg:col-span-2">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <form method="post" class="space-y-6">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-error">
+                                {% for error in form.non_field_errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Basic Information -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold">Plan Details</h3>
+
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Plan Name *</span>
+                                </label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ form.name.errors.0 }}</span>
+                                    </label>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Debt Reduction Method *</span>
+                                </label>
+                                {{ form.method }}
+                                {% if form.method.errors %}
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ form.method.errors.0 }}</span>
+                                    </label>
+                                {% endif %}
+
+                                <div class="mt-2 space-y-2">
+                                    <div id="method-description-snowball" class="method-description text-sm text-base-content/70">
+                                        <strong>Debt Snowball:</strong> Pay off smallest debts first for psychological momentum. Best for motivation.
+                                    </div>
+                                    <div id="method-description-avalanche" class="method-description text-sm text-base-content/70 hidden">
+                                        <strong>Debt Avalanche:</strong> Pay off highest interest debts first for financial efficiency. Best for saving money.
+                                    </div>
+                                    <div id="method-description-consolidation" class="method-description text-sm text-base-content/70 hidden">
+                                        <strong>Debt Consolidation:</strong> Combine multiple debts into a single loan with potentially lower interest.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Extra Payment -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold">Payment Strategy</h3>
+
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Extra Monthly Payment</span>
+                                </label>
+                                {{ form.extra_payment }}
+                                {% if form.extra_payment.errors %}
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ form.extra_payment.errors.0 }}</span>
+                                    </label>
+                                {% endif %}
+                                <label class="label">
+                                    <span class="label-text-alt">Additional amount to pay beyond minimums each month</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Consolidation Options -->
+                        <div id="consolidation-options" class="space-y-4 {% if form.method.value != 'consolidation' %}hidden{% endif %}">
+                            <h3 class="text-lg font-semibold">Consolidation Details</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Consolidated Interest Rate (%)</span>
+                                    </label>
+                                    {{ form.consolidation_rate }}
+                                    {% if form.consolidation_rate.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.consolidation_rate.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Loan Term (Months)</span>
+                                    </label>
+                                    {{ form.consolidation_term }}
+                                    {% if form.consolidation_term.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.consolidation_term.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plan Preview -->
+                        <div class="bg-base-200 p-4 rounded-lg">
+                            <h4 class="font-semibold mb-3">Plan Preview</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                <div>
+                                    <span class="text-base-content/70">Selected Method:</span>
+                                    <div id="preview-method" class="font-semibold text-primary">-</div>
+                                </div>
+                                <div>
+                                    <span class="text-base-content/70">Extra Payment:</span>
+                                    <div id="preview-extra" class="font-semibold text-primary">$0.00</div>
+                                </div>
+                                <div>
+                                    <span class="text-base-content/70">Loans Included:</span>
+                                    <div id="preview-loans" class="font-semibold text-primary">{{ user.loans.filter(is_active=True).count }}</div>
+                                </div>
+                                <div>
+                                    <span class="text-base-content/70">Total Debt:</span>
+                                    <div id="preview-debt" class="font-semibold text-primary">${{ user.loans.filter(is_active=True).aggregate_sum|floatformat:0|intcomma }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <button type="submit" class="btn btn-primary flex-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Create Plan
+                            </button>
+                            <a href="{% url 'plans:list' %}" class="btn btn-ghost">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Method Comparison -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Method Comparison</h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-semibold">Debt Snowball</h4>
+                            <p class="text-sm text-base-content/70">Pay smallest balances first. Great for motivation and quick wins.</p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-semibold">Debt Avalanche</h4>
+                            <p class="text-sm text-base-content/70">Pay highest interest first. Mathematically optimal for saving money.</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-semibold">Debt Consolidation</h4>
+                            <p class="text-sm text-base-content/70">Combine debts into one loan. Simplifies payments but may extend term.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Your Loans -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Your Active Loans</h3>
+                    {% if user.loans.filter(is_active=True).exists %}
+                        <div class="space-y-2">
+                            {% for loan in user.loans.filter(is_active=True) %}
+                                <div class="flex justify-between items-center py-2 border-b border-base-300 last:border-b-0">
+                                    <div>
+                                        <div class="font-medium">{{ loan.name }}</div>
+                                        <div class="text-sm text-base-content/70">{{ loan.creditor }}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">${{ loan.balance|floatformat:0|intcomma }}</div>
+                                        <div class="text-sm text-base-content/70">{{ loan.interest_rate }}%</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-base-300">
+                            <div class="flex justify-between font-semibold">
+                                <span>Total Debt:</span>
+                                <span>${{ user.loans.filter(is_active=True).aggregate_sum|floatformat:0|intcomma }}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-base-content/70">No active loans found.</p>
+                        <a href="{% url 'loans:create' %}" class="btn btn-outline btn-sm mt-2">Add Loan</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">💡 Tips</h3>
+                    <ul class="text-sm space-y-2 text-base-content/70">
+                        <li>• Choose a method that matches your personality</li>
+                        <li>• Extra payments accelerate payoff significantly</li>
+                        <li>• You can always modify your plan later</li>
+                        <li>• Track progress regularly for motivation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Dynamic form updates
+document.addEventListener('DOMContentLoaded', function() {
+    const methodSelect = document.querySelector('[name="method"]');
+    const consolidationOptions = document.getElementById('consolidation-options');
+    const methodDescriptions = document.querySelectorAll('.method-description');
+
+    function updateMethodDisplay() {
+        const selectedMethod = methodSelect.value;
+
+        // Show/hide consolidation options
+        if (selectedMethod === 'consolidation') {
+            consolidationOptions.classList.remove('hidden');
+        } else {
+            consolidationOptions.classList.add('hidden');
+        }
+
+        // Update method descriptions
+        methodDescriptions.forEach(desc => desc.classList.add('hidden'));
+        const activeDesc = document.getElementById(`method-description-${selectedMethod}`);
+        if (activeDesc) {
+            activeDesc.classList.remove('hidden');
+        }
+
+        // Update preview
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const method = methodSelect.value;
+        const extraPayment = parseFloat(document.querySelector('[name="extra_payment"]')?.value) || 0;
+
+        document.getElementById('preview-method').textContent = method.charAt(0).toUpperCase() + method.slice(1);
+        document.getElementById('preview-extra').textContent = formatCurrency(extraPayment);
+    }
+
+    if (methodSelect) {
+        methodSelect.addEventListener('change', updateMethodDisplay);
+        updateMethodDisplay(); // Initial call
+    }
+
+    // Update preview on extra payment change
+    document.querySelector('[name="extra_payment"]')?.addEventListener('input', updatePreview);
+});
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(amount);
+}
+</script>
+{% endblock %}

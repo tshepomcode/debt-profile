@@ -1,0 +1,243 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Subscription - Debt Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-base-content">Subscription Plans</h1>
+        <p class="text-base-content/70 mt-2">Choose the plan that fits your debt reduction goals</p>
+    </div>
+
+    <!-- Current Plan Status -->
+    {% if user.subscription.is_active %}
+        <div class="alert alert-success mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+                <h3 class="font-bold">Premium Active</h3>
+                <div class="text-xs">Your subscription is active and all features are unlocked</div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Pricing Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <!-- Free Plan -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="text-center">
+                    <h2 class="card-title justify-center text-2xl">Free</h2>
+                    <div class="text-4xl font-bold">$0</div>
+                    <div class="text-base-content/70">Forever</div>
+                </div>
+
+                <ul class="space-y-2 mt-6">
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        3 debt calculations per month
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Basic debt methods
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Simple visualizations
+                    </li>
+                    <li class="flex items-center text-base-content/50">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Advanced features
+                    </li>
+                </ul>
+
+                <div class="card-actions justify-center mt-6">
+                    <button class="btn btn-outline btn-block" disabled>
+                        Current Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="card bg-base-100 shadow-xl border-primary border-2 relative">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div class="badge badge-primary">Most Popular</div>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <h2 class="card-title justify-center text-2xl">Pro</h2>
+                    <div class="text-4xl font-bold">$9.99</div>
+                    <div class="text-base-content/70">per month</div>
+                </div>
+
+                <ul class="space-y-2 mt-6">
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Unlimited debt calculations
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        All debt methods
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Advanced visualizations
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        PDF exports
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Plan comparisons
+                    </li>
+                </ul>
+
+                <div class="card-actions justify-center mt-6">
+                    {% if user.subscription.is_active %}
+                        <button class="btn btn-primary btn-block" disabled>
+                            Current Plan
+                        </button>
+                    {% else %}
+                        <button class="btn btn-primary btn-block" onclick="subscribe('pro_monthly')">
+                            Subscribe Now
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="text-center">
+                    <h2 class="card-title justify-center text-2xl">Premium</h2>
+                    <div class="text-4xl font-bold">$19.99</div>
+                    <div class="text-base-content/70">per month</div>
+                </div>
+
+                <ul class="space-y-2 mt-6">
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Everything in Pro
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Personalized recommendations
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Priority support
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        API access
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Advanced analytics
+                    </li>
+                </ul>
+
+                <div class="card-actions justify-center mt-6">
+                    {% if user.subscription.is_active %}
+                        <button class="btn btn-primary btn-block" disabled>
+                            Current Plan
+                        </button>
+                    {% else %}
+                        <button class="btn btn-primary btn-block" onclick="subscribe('premium_monthly')">
+                            Subscribe Now
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title">Frequently Asked Questions</h2>
+
+            <div class="space-y-4">
+                <div class="collapse collapse-arrow">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        Can I cancel my subscription anytime?
+                    </div>
+                    <div class="collapse-content">
+                        <p>Yes, you can cancel your subscription at any time. You'll continue to have access to premium features until the end of your billing period.</p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        What payment methods do you accept?
+                    </div>
+                    <div class="collapse-content">
+                        <p>We accept all major credit cards and debit cards through our secure Stripe payment processor.</p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        Is my financial data secure?
+                    </div>
+                    <div class="collapse-content">
+                        <p>Absolutely. We use bank-level encryption and follow strict security practices. Your financial data is never shared with third parties.</p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        Do you offer refunds?
+                    </div>
+                    <div class="collapse-content">
+                        <p>We offer a 14-day money-back guarantee for all new subscriptions. Contact support if you're not satisfied.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function subscribe(planId) {
+    // This would integrate with Stripe Checkout
+    alert('Stripe integration coming soon! Plan: ' + planId);
+}
+</script>
+{% endblock %}

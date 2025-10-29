@@ -1,0 +1,216 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Waiting List Management - Debt Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-base-content">Waiting List Management</h1>
+                <p class="text-base-content/70 mt-2">Manage early access users and send notifications</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <div class="flex items-center">
+                    <div class="text-2xl">👥</div>
+                    <div class="ml-4">
+                        <p class="text-base-content/70 text-sm">Total Signups</p>
+                        <p class="text-2xl font-bold">{{ total_signups }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <div class="flex items-center">
+                    <div class="text-2xl">📧</div>
+                    <div class="ml-4">
+                        <p class="text-base-content/70 text-sm">Not Notified</p>
+                        <p class="text-2xl font-bold">{{ not_notified_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <div class="flex items-center">
+                    <div class="text-2xl">✅</div>
+                    <div class="ml-4">
+                        <p class="text-base-content/70 text-sm">Notified</p>
+                        <p class="text-2xl font-bold">{{ notified_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <div class="flex items-center">
+                    <div class="text-2xl">📈</div>
+                    <div class="ml-4">
+                        <p class="text-base-content/70 text-sm">This Week</p>
+                        <p class="text-2xl font-bold">{{ this_week_signups }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Notification Form -->
+    <div class="card bg-base-100 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title">Send Notification Email</h2>
+            <p class="text-base-content/70 mb-4">Send a notification email to waiting list users about product updates or launch.</p>
+
+            <form method="post" action="{% url 'billing:notify-waiting-list' %}" class="space-y-4">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Email Subject *</span>
+                        </label>
+                        <input type="text" name="subject" class="input input-bordered" placeholder="Debt Profile is now available!" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Filter by Interest (Optional)</span>
+                        </label>
+                        <select name="interest_filter" class="select select-bordered">
+                            <option value="">All Users</option>
+                            <option value="free">Free Calculator</option>
+                            <option value="pro">Pro Features</option>
+                            <option value="premium">Premium Features</option>
+                            <option value="business">Business Solutions</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Message *</span>
+                    </label>
+                    <textarea name="message" class="textarea textarea-bordered h-32" placeholder="Great news! Debt Profile is now live with all the features you've been waiting for..." required></textarea>
+                </div>
+
+                <div class="alert alert-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <p><strong>Preview:</strong> {{ not_notified_count }} users will receive this notification.</p>
+                        <p class="text-sm">Only users who haven't been notified yet will receive this email.</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Send Notification
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Waiting List Table -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title">Waiting List Users</h2>
+
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Interest</th>
+                            <th>Signup Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in waiting_list %}
+                        <tr>
+                            <td class="font-medium">{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <div class="badge {% if user.interest == 'free' %}badge-ghost{% elif user.interest == 'pro' %}badge-info{% elif user.interest == 'premium' %}badge-success{% else %}badge-warning{% endif %}">
+                                    {{ user.get_interest_display }}
+                                </div>
+                            </td>
+                            <td>{{ user.created_at|date:"M j, Y" }}</td>
+                            <td>
+                                {% if user.is_notified %}
+                                    <div class="badge badge-success">Notified</div>
+                                {% else %}
+                                    <div class="badge badge-warning">Pending</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="dropdown dropdown-left">
+                                    <div tabindex="0" role="button" class="btn btn-sm btn-ghost">⋮</div>
+                                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                        <li><a href="mailto:{{ user.email }}">Send Email</a></li>
+                                        {% if not user.is_notified %}
+                                        <li><a href="#" class="text-success">Mark Notified</a></li>
+                                        {% endif %}
+                                        <li><a href="#" class="text-error">Remove from List</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-base-content/70">
+                                No users in waiting list yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if waiting_list.has_other_pages %}
+            <div class="flex justify-center mt-6">
+                <div class="join">
+                    {% if waiting_list.has_previous %}
+                        <a href="?page={{ waiting_list.previous_page_number }}" class="join-item btn">«</a>
+                    {% endif %}
+
+                    <button class="join-item btn">Page {{ waiting_list.number }} of {{ waiting_list.paginator.num_pages }}</button>
+
+                    {% if waiting_list.has_next %}
+                        <a href="?page={{ waiting_list.next_page_number }}" class="join-item btn">»</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-resize textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('textarea[name="message"]');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    }
+});
+</script>
+{% endblock %}

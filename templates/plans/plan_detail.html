@@ -1,0 +1,298 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ plan.name }} - Debt Profile{% endblock %}
+
+{% block disclaimers %}
+    {% include 'base/disclaimer.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-base-content">{{ plan.name }}</h1>
+                <p class="text-base-content/70 mt-2">{{ plan.get_method_display }} Plan</p>
+            </div>
+            <div class="flex space-x-2">
+                {% if plan.status == 'draft' %}
+                    <a href="{% url 'plans:calculate' plan.id %}" class="btn btn-primary">
+                        Calculate Plan
+                    </a>
+                {% endif %}
+                {% if plan.plan_data and plan.status != 'active' %}
+                    <a href="{% url 'plans:activate' plan.id %}" class="btn btn-success">
+                        Activate Plan
+                    </a>
+                {% endif %}
+                <a href="{% url 'plans:list' %}" class="btn btn-ghost">Back to Plans</a>
+            </div>
+        </div>
+    </div>
+
+    {% if plan.plan_data %}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Plan Overview -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Plan Overview</h2>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="text-center">
+                                <p class="text-base-content/70 text-sm">Total Debt</p>
+                                <p class="text-3xl font-bold text-primary">${{ plan.total_debt|floatformat:0|intcomma }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-base-content/70 text-sm">Monthly Payment</p>
+                                <p class="text-3xl font-bold">${{ plan.total_payments|div:plan.payoff_months|floatformat:0|intcomma }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-base-content/70 text-sm">Payoff Time</p>
+                                <p class="text-3xl font-bold">{{ plan.payoff_months }} months</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-base-content/70 text-sm">Interest Saved</p>
+                                <p class="text-3xl font-bold text-green-600">${{ plan.total_interest_saved|floatformat:0|intcomma }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Schedule Chart -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Payment Schedule</h2>
+                        <div class="chart-container">
+                            <canvas id="paymentScheduleChart" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Breakdown -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Monthly Payment Breakdown</h2>
+
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Total Payment</th>
+                                        <th>Principal</th>
+                                        <th>Interest</th>
+                                        <th>Remaining Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for month_data in plan.plan_data.schedule|slice:":12" %}
+                                        <tr>
+                                            <td>{{ month_data.month }}</td>
+                                            <td>${{ month_data.total_payment|floatformat:0|intcomma }}</td>
+                                            <td>${{ month_data.payments.values.0.payment|floatformat:0|intcomma }}</td>
+                                            <td>${{ month_data.payments.values.0.interest|floatformat:0|intcomma }}</td>
+                                            <td>${{ month_data.remaining_balance|floatformat:0|intcomma }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if plan.plan_data.schedule|length > 12 %}
+                            <div class="text-center mt-4">
+                                <p class="text-base-content/70">Showing first 12 months of {{ plan.plan_data.schedule|length }} total months</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Plan Status -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Plan Status</h2>
+
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Status:</span>
+                                <span class="badge {% if plan.status == 'active' %}badge-success{% elif plan.status == 'completed' %}badge-info{% else %}badge-warning{% endif %}">
+                                    {{ plan.get_status_display }}
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Method:</span>
+                                <span class="font-medium">{{ plan.get_method_display }}</span>
+                            </div>
+
+                            {% if plan.extra_payment %}
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Extra Payment:</span>
+                                <span class="font-medium">${{ plan.extra_payment|floatformat:0|intcomma }}</span>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Loans:</span>
+                                <span class="font-medium">{{ plan.loans_count }}</span>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Created:</span>
+                                <span class="font-medium text-sm">{{ plan.created_at|date:"M j, Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Included Loans -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Included Loans</h2>
+
+                        <div class="space-y-3">
+                            {% for loan in plan.loans %}
+                                <div class="flex justify-between items-center p-3 bg-base-200 rounded-lg">
+                                    <div>
+                                        <div class="font-medium">{{ loan.name }}</div>
+                                        <div class="text-sm text-base-content/70">{{ loan.creditor }}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">${{ loan.balance|floatformat:0|intcomma }}</div>
+                                        <div class="text-sm text-base-content/70">{{ loan.interest_rate }}%</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Actions</h2>
+
+                        <div class="space-y-2">
+                            {% if user.subscription.is_active %}
+                                <a href="{% url 'plans:export' plan.id %}" class="btn btn-outline btn-block">
+                                    Export PDF
+                                </a>
+                            {% else %}
+                                <div class="text-center p-4 bg-base-200 rounded-lg">
+                                    <p class="text-sm text-base-content/70 mb-2">PDF Export requires Pro plan</p>
+                                    <a href="{% url 'billing:subscription' %}" class="btn btn-primary btn-sm">Upgrade</a>
+                                </div>
+                            {% endif %}
+
+                            <a href="{% url 'plans:edit' plan.id %}" class="btn btn-outline btn-block">
+                                Edit Plan
+                            </a>
+
+                            {% if plan.status == 'active' %}
+                                <button
+                                    class="btn btn-success btn-block"
+                                    hx-post="{% url 'plans:complete' plan.id %}"
+                                    hx-confirm="Mark this plan as completed?"
+                                >
+                                    Mark Complete
+                                </button>
+                            {% endif %}
+
+                            <button
+                                class="btn btn-error btn-block"
+                                hx-delete="{% url 'plans:delete' plan.id %}"
+                                hx-confirm="Are you sure you want to delete this plan? This action cannot be undone."
+                            >
+                                Delete Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Tracking -->
+                {% if plan.status == 'active' %}
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Track Progress</h2>
+                        <p class="text-base-content/70 text-sm mb-4">Log your monthly payments to track progress.</p>
+                        <a href="#" class="btn btn-outline btn-block">Add Progress Entry</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <!-- Plan Not Calculated -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body text-center py-16">
+                <div class="text-6xl mb-4">⚙️</div>
+                <h3 class="text-2xl font-bold mb-4">Plan Not Calculated</h3>
+                <p class="text-base-content/70 mb-8 max-w-md mx-auto">
+                    This plan needs to be calculated before you can view the payment schedule and projections.
+                </p>
+                <a href="{% url 'plans:calculate' plan.id %}" class="btn btn-primary btn-lg">
+                    Calculate Plan
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% if plan.plan_data %}
+{% json_script "schedule-data" plan.plan_data.schedule %}
+<script>
+// Payment Schedule Chart
+document.addEventListener('DOMContentLoaded', function() {
+    const scheduleData = JSON.parse(document.getElementById('schedule-data').textContent);
+    const labels = scheduleData.slice(0, 24).map(function(item) { return 'Month ' + item.month; });
+    const balances = scheduleData.slice(0, 24).map(function(item) { return item.remaining_balance; });
+
+    const ctx = document.getElementById('paymentScheduleChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Remaining Balance',
+                    data: balances,
+                    borderColor: '#4F46E5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Balance: $' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

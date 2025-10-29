@@ -1,0 +1,140 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Sign Up - Debt Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary">
+                <span class="text-2xl">💰</span>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-base-content">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-base-content/70">
+                Start your journey to debt freedom today
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-6" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {% for error in form.non_field_errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="space-y-4">
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-base-content">
+                        Email address
+                    </label>
+                    <input
+                        id="{{ form.email.id_for_label }}"
+                        name="{{ form.email.name }}"
+                        type="email"
+                        autocomplete="email"
+                        required
+                        class="mt-1 block w-full px-3 py-2 border border-base-300 rounded-md shadow-sm placeholder-base-content/50 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-base-100 text-base-content"
+                        placeholder="Enter your email"
+                        value="{{ form.email.value|default:'' }}"
+                    >
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-error">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-base-content">
+                        Password
+                    </label>
+                    <input
+                        id="{{ form.password1.id_for_label }}"
+                        name="{{ form.password1.name }}"
+                        type="password"
+                        autocomplete="new-password"
+                        required
+                        class="mt-1 block w-full px-3 py-2 border border-base-300 rounded-md shadow-sm placeholder-base-content/50 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-base-100 text-base-content"
+                        placeholder="Create a password"
+                    >
+                    {% if form.password1.errors %}
+                        <p class="mt-1 text-sm text-error">{{ form.password1.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-base-content">
+                        Confirm Password
+                    </label>
+                    <input
+                        id="{{ form.password2.id_for_label }}"
+                        name="{{ form.password2.name }}"
+                        type="password"
+                        autocomplete="new-password"
+                        required
+                        class="mt-1 block w-full px-3 py-2 border border-base-300 rounded-md shadow-sm placeholder-base-content/50 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-base-100 text-base-content"
+                        placeholder="Confirm your password"
+                    >
+                    {% if form.password2.errors %}
+                        <p class="mt-1 text-sm text-error">{{ form.password2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-center">
+                <input
+                    id="terms"
+                    name="terms"
+                    type="checkbox"
+                    required
+                    class="h-4 w-4 text-primary focus:ring-primary border-base-300 rounded"
+                >
+                <label for="terms" class="ml-2 block text-sm text-base-content">
+                    I agree to the
+                    <a href="#" class="text-primary hover:text-primary-focus">Terms of Service</a>
+                    and
+                    <a href="#" class="text-primary hover:text-primary-focus">Privacy Policy</a>
+                </label>
+            </div>
+
+            <div>
+                <button
+                    type="submit"
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-primary-content bg-primary hover:bg-primary-focus focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
+                >
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-primary-content group-hover:text-primary-content" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Create Account
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center">
+            <p class="text-sm text-base-content/70">
+                Already have an account?
+                <a href="{% url 'account_login' %}" class="font-medium text-primary hover:text-primary-focus">
+                    Sign in here
+                </a>
+            </p>
+        </div>
+
+        <!-- Features Preview -->
+        <div class="mt-8 p-4 bg-base-100 rounded-lg border border-base-300">
+            <h3 class="text-sm font-medium text-base-content mb-3">What you'll get:</h3>
+            <ul class="text-xs text-base-content/70 space-y-1">
+                <li>✓ Free debt calculator with 3 proven methods</li>
+                <li>✓ Personalized payment plans</li>
+                <li>✓ Progress tracking and insights</li>
+                <li>✓ Premium features for advanced users</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

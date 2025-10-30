@@ -116,6 +116,45 @@
                                     {% endif %}
                                 </div>
                             </div>
+
+                            <!-- Additional Loan Details -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Original Loan Amount ($)</span>
+                                    </label>
+                                    {{ form.original_balance }}
+                                    {% if form.original_balance.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.original_balance.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Remaining Term (Months)</span>
+                                    </label>
+                                    {{ form.remaining_term_months }}
+                                    {% if form.remaining_term_months.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.remaining_term_months.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Next Payment Date</span>
+                                    </label>
+                                    {{ form.due_date }}
+                                    {% if form.due_date.errors %}
+                                        <label class="label">
+                                            <span class="label-text-alt text-error">{{ form.due_date.errors.0 }}</span>
+                                        </label>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Real-time Calculations Preview -->
@@ -137,6 +176,29 @@
                                 <div>
                                     <span class="text-base-content/70">Total Payments:</span>
                                     <div id="total-payments" class="font-semibold text-primary">$0.00</div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced Balance Details -->
+                            <div class="mt-4 pt-4 border-t border-base-300">
+                                <h5 class="font-medium mb-2 text-base-content/80">Balance Details</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-base-content/70">Original Amount:</span>
+                                        <div id="original-amount" class="font-semibold text-base-content">$0.00</div>
+                                    </div>
+                                    <div>
+                                        <span class="text-base-content/70">Current Balance:</span>
+                                        <div id="current-balance" class="font-semibold text-base-content">$0.00</div>
+                                    </div>
+                                    <div>
+                                        <span class="text-base-content/70">Amount Paid:</span>
+                                        <div id="amount-paid" class="font-semibold text-success">$0.00</div>
+                                    </div>
+                                    <div>
+                                        <span class="text-base-content/70">Remaining Term:</span>
+                                        <div id="remaining-term" class="font-semibold text-base-content">0 months</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -240,11 +302,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const balanceInput = document.querySelector('[name="balance"]');
     const rateInput = document.querySelector('[name="interest_rate"]');
     const paymentInput = document.querySelector('[name="minimum_payment"]');
+    const originalBalanceInput = document.querySelector('[name="original_balance"]');
+    const remainingTermInput = document.querySelector('[name="remaining_term_months"]');
 
     function updateCalculations() {
         const balance = parseFloat(balanceInput?.value) || 0;
         const rate = parseFloat(rateInput?.value) || 0;
         const minPayment = parseFloat(paymentInput?.value) || 0;
+        const originalBalance = parseFloat(originalBalanceInput?.value) || balance;
+        const remainingTerm = parseInt(remainingTermInput?.value) || 0;
+
+        // Update balance details
+        document.getElementById('original-amount').textContent = formatCurrency(originalBalance);
+        document.getElementById('current-balance').textContent = formatCurrency(balance);
+        document.getElementById('amount-paid').textContent = formatCurrency(originalBalance - balance);
+        document.getElementById('remaining-term').textContent = remainingTerm > 0 ? `${remainingTerm} months` : 'Not specified';
 
         if (balance > 0 && rate > 0 && minPayment > 0) {
             // Monthly interest
@@ -264,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    [balanceInput, rateInput, paymentInput].forEach(input => {
+    [balanceInput, rateInput, paymentInput, originalBalanceInput, remainingTermInput].forEach(input => {
         if (input) {
             input.addEventListener('input', updateCalculations);
         }

@@ -1,0 +1,165 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Sign Up - Debt Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#F8FAFC] p-6">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] rounded-2xl flex items-center justify-center text-white text-3xl mb-6 shadow-lg">
+                💰
+            </div>
+            <h2 class="text-3xl font-bold text-[#111827] mb-2">
+                Start your journey
+            </h2>
+            <p class="text-[#6B7280]">
+                Create your account to begin managing your debt effectively
+            </p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <form method="post" action="{% url 'account_signup' %}">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error mb-6">
+                        {% for error in form.non_field_errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-[#111827] mb-2">
+                            Email address
+                        </label>
+                        <input
+                            id="{{ form.email.id_for_label }}"
+                            name="{{ form.email.name }}"
+                            type="email"
+                            autocomplete="email"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent text-[#111827] placeholder-[#6B7280]"
+                            placeholder="Enter your email"
+                            value="{{ form.email.value|default:'' }}"
+                        >
+                        {% if form.email.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-[#111827] mb-2">
+                            Password
+                        </label>
+                        <input
+                            id="{{ form.password1.id_for_label }}"
+                            name="{{ form.password1.name }}"
+                            type="password"
+                            autocomplete="new-password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent text-[#111827] placeholder-[#6B7280]"
+                            placeholder="Create a strong password"
+                        >
+                        {% if form.password1.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-[#111827] mb-2">
+                            Confirm Password
+                        </label>
+                        <input
+                            id="{{ form.password2.id_for_label }}"
+                            name="{{ form.password2.name }}"
+                            type="password"
+                            autocomplete="new-password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent text-[#111827] placeholder-[#6B7280]"
+                            placeholder="Confirm your password"
+                        >
+                        {% if form.password2.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex items-start mt-6">
+                    <input
+                        id="terms"
+                        name="terms"
+                        type="checkbox"
+                        required
+                        class="mt-1 h-4 w-4 text-[#4F46E5] focus:ring-[#4F46E5] border-gray-300 rounded"
+                    >
+                    <label for="terms" class="ml-2 block text-sm text-[#111827]">
+                        I agree to the
+                        <a href="#" class="text-[#4F46E5] hover:text-[#4F46E5]/80 transition-colors">Terms of Service</a>
+                        and
+                        <a href="#" class="text-[#4F46E5] hover:text-[#4F46E5]/80 transition-colors">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <div class="mt-6">
+                    <button
+                        type="submit"
+                        class="w-full bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] text-white py-3 px-4 rounded-xl font-medium hover:from-[#4F46E5]/90 hover:to-[#60A5FA]/90 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4F46E5]"
+                    >
+                        Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Features Preview Card -->
+        <div class="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-sm font-medium text-[#111827] mb-4 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                What you'll get:
+            </h3>
+            <ul class="text-xs text-[#6B7280] space-y-2">
+                <li class="flex items-center">
+                    <svg class="w-3 h-3 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Free debt calculator with 3 proven methods
+                </li>
+                <li class="flex items-center">
+                    <svg class="w-3 h-3 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Personalized payment plans
+                </li>
+                <li class="flex items-center">
+                    <svg class="w-3 h-3 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Progress tracking and insights
+                </li>
+                <li class="flex items-center">
+                    <svg class="w-3 h-3 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Premium features for advanced users
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer Links -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-[#6B7280]">
+                Already have an account?
+                <a href="{% url 'account_login' %}" class="font-medium text-[#4F46E5] hover:text-[#4F46E5]/80 transition-colors">
+                    Sign in here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

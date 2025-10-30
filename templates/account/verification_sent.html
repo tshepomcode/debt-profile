@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Email Verification Sent - Debt Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#F8FAFC] p-6">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] rounded-2xl flex items-center justify-center text-white text-3xl mb-6 shadow-lg">
+                📧
+            </div>
+            <h2 class="text-3xl font-bold text-[#111827] mb-2">
+                Check your email
+            </h2>
+            <p class="text-[#6B7280]">
+                We've sent you a verification link
+            </p>
+        </div>
+
+        <!-- Message Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div class="text-center">
+                <div class="text-6xl mb-4">📬</div>
+                <h3 class="text-lg font-semibold text-[#111827] mb-2">
+                    Verification email sent
+                </h3>
+                <p class="text-[#6B7280] mb-6">
+                    We've sent a verification link to <strong>{{ email }}</strong>.
+                    Click the link in the email to verify your account.
+                </p>
+
+                <div class="space-y-3">
+                    <a href="{% url 'account_email' %}" class="w-full bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] text-white py-3 px-4 rounded-xl font-medium hover:from-[#4F46E5]/90 hover:to-[#60A5FA]/90 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4F46E5] block text-center">
+                        Manage Email Addresses
+                    </a>
+
+                    <a href="{% url 'account_login' %}" class="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors block text-center">
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Text -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-[#6B7280]">
+                Didn't receive the email?
+                <a href="{% url 'account_email' %}" class="text-[#4F46E5] hover:text-[#4F46E5]/80 transition-colors">
+                    Check your email settings
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

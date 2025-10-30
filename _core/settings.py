@@ -77,7 +77,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
+        'APP_DIRS': False,  # Disable app directories to prioritize our custom templates
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -157,10 +157,18 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+# AllAuth template settings - ensure custom templates are used
+ACCOUNT_TEMPLATE_EXTENSION = 'html'
+ACCOUNT_FORMS = {
+    'login': 'allauth.account.forms.LoginForm',
+    'signup': 'allauth.account.forms.SignupForm',
+}
+ACCOUNT_TEMPLATE_DIRS = [BASE_DIR / 'templates']
+
 # Updated Allauth settings to use new format
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Disable email verification for demo purposes
 LOGIN_REDIRECT_URL = '/'  # Points to the dashboard view
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 

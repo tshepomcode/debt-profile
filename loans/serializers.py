@@ -12,7 +12,8 @@ class LoanSerializer(serializers.ModelSerializer):
         model = Loan
         fields = [
             'id', 'user', 'name', 'balance', 'interest_rate', 'monthly_interest_rate',
-            'minimum_payment', 'estimated_payoff_months', 'is_active', 'created_at', 'updated_at'
+            'minimum_payment', 'estimated_payoff_months', 'original_balance', 'remaining_term_months',
+            'due_date', 'is_active', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'user', 'monthly_interest_rate', 'estimated_payoff_months', 'created_at', 'updated_at']
 

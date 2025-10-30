@@ -1,0 +1,134 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Sign In - Debt Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#F8FAFC] p-6">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] rounded-2xl flex items-center justify-center text-white text-3xl mb-6 shadow-lg">
+                💰
+            </div>
+            <h2 class="text-3xl font-bold text-[#111827] mb-2">
+                Welcome back
+            </h2>
+            <p class="text-[#6B7280]">
+                Sign in to your account to continue managing your debt
+            </p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <form method="post" action="{% url 'account_login' %}">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error mb-6">
+                        {% for error in form.non_field_errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="{{ form.login.id_for_label }}" class="block text-sm font-medium text-[#111827] mb-2">
+                            Email address
+                        </label>
+                        <input
+                            id="{{ form.login.id_for_label }}"
+                            name="{{ form.login.name }}"
+                            type="email"
+                            autocomplete="email"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent text-[#111827] placeholder-[#6B7280]"
+                            placeholder="Enter your email"
+                            value="{{ form.login.value|default:'' }}"
+                        >
+                        {% if form.login.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.login.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-[#111827] mb-2">
+                            Password
+                        </label>
+                        <input
+                            id="{{ form.password.id_for_label }}"
+                            name="{{ form.password.name }}"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent text-[#111827] placeholder-[#6B7280]"
+                            placeholder="Enter your password"
+                        >
+                        {% if form.password.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.password.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-6">
+                    <div class="flex items-center">
+                        <input
+                            id="remember"
+                            name="remember"
+                            type="checkbox"
+                            class="h-4 w-4 text-[#4F46E5] focus:ring-[#4F46E5] border-gray-300 rounded"
+                        >
+                        <label for="remember" class="ml-2 block text-sm text-[#111827]">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="{% url 'account_reset_password' %}" class="font-medium text-[#4F46E5] hover:text-[#4F46E5]/80 transition-colors">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button
+                        type="submit"
+                        class="w-full bg-gradient-to-r from-[#4F46E5] to-[#60A5FA] text-white py-3 px-4 rounded-xl font-medium hover:from-[#4F46E5]/90 hover:to-[#60A5FA]/90 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4F46E5]"
+                    >
+                        Sign in
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Demo Account Card -->
+        <div class="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-sm font-medium text-[#111827] mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                Demo Account
+            </h3>
+            <p class="text-xs text-[#6B7280] mb-3">
+                For testing purposes, you can use these credentials:
+            </p>
+            <div class="text-xs font-mono bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <div class="space-y-1">
+                    <div><span class="text-gray-500">Email:</span> <span class="text-[#111827]">demo@debtprofile.com</span></div>
+                    <div><span class="text-gray-500">Password:</span> <span class="text-[#111827]">demo123</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Links -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-[#6B7280]">
+                Don't have an account?
+                <a href="{% url 'account_signup' %}" class="font-medium text-[#4F46E5] hover:text-[#4F46E5]/80 transition-colors">
+                    Create one here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

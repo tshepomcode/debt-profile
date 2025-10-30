@@ -7,7 +7,7 @@ class LoanForm(forms.ModelForm):
 
     class Meta:
         model = Loan
-        fields = ['name', 'balance', 'interest_rate', 'minimum_payment', 'creditor', 'loan_type']
+        fields = ['name', 'balance', 'interest_rate', 'minimum_payment', 'creditor', 'loan_type', 'original_balance', 'remaining_term_months', 'due_date']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
@@ -38,6 +38,22 @@ class LoanForm(forms.ModelForm):
             }),
             'loan_type': forms.Select(attrs={
                 'class': 'select select-bordered w-full'
+            }),
+            'original_balance': forms.NumberInput(attrs={
+                'class': 'input input-bordered w-full',
+                'step': '0.01',
+                'min': '0',
+                'placeholder': 'Original loan amount (optional)'
+            }),
+            'remaining_term_months': forms.NumberInput(attrs={
+                'class': 'input input-bordered w-full',
+                'min': '0',
+                'placeholder': 'Remaining months'
+            }),
+            'due_date': forms.DateInput(attrs={
+                'class': 'input input-bordered w-full',
+                'type': 'date',
+                'placeholder': 'Next payment date'
             }),
         }
 

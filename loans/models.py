@@ -56,6 +56,11 @@ class Loan(models.Model):
         blank=True,
         help_text="Original term in months (if applicable)"
     )
+    remaining_term_months = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Remaining term in months"
+    )
     due_date = models.DateField(
         null=True,
         blank=True,
